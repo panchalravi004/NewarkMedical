@@ -1,0 +1,134 @@
+{% extends 'base.html' %}
+{% block title %}Member{% endblock title %}
+{% block content %}
+{% load static %}
+{% load filterData %}
+
+<div class="container content-wrapper my-3" style="border-radius:20px;">
+  <div class="row">
+    <div class="col-md-12 grid-margin">
+      <div class="d-flex justify-content-between align-items-center">
+        <div>
+          <h4 class="font-weight-bold mb-0">Manage Member</h4>
+        </div>
+        <div>
+            <button type="button" class="btn btn-inverse-primary btn-icon-text" data-bs-toggle="modal" data-bs-target="#addMember">
+              <i class="ti-user btn-icon-prepend"></i>Add Member
+            </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-lg-12 grid-margin stretch-card">
+      <div class="card" style="border-radius:20px;">
+        <div class="card-body">
+          <h4 class="card-title">Member Records</h4>
+          <div class="table-responsive pt-3">
+            <table class="table table-bordered">
+              <thead>
+                <tr>
+                  <th>First name</th>
+                  <th>Email</th>
+                  <th>Department</th>
+                  <th>Position</th>
+                  <th>Shift</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for m in memberList %}
+                  <tr>
+                    <td>{{m.user.first_name}}</td>
+                    <td>{{m.user.email}}</td>
+                    <td>{{m.department.name}}</td>
+                    <td>{{m.position}}</td>
+                    <td>{{m.shift}}</td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="addMember" tabindex="-1" aria-labelledby="addMemberLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <form method="POST" action=" {% url "member-add" %} " class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="addMemberLabel">Add Member</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row pt-1">
+            {% csrf_token %}
+            <div class="col-lg-6 form-group">
+              <input type="text" class="form-control form-control-lg" id="fnameInput" name="fname" placeholder="Firstname" required>
+            </div>
+            <div class="col-lg-6 form-group">
+              <input type="text" class="form-control form-control-lg" id="lnameInput" name="lname" placeholder="Lastname" required>
+            </div>
+            <div class="col-lg-6 form-group">
+              <input type="email" class="form-control form-control-lg" id="emailInput" name="email" placeholder="Email" required>
+            </div>
+            <div class="col-lg-6 form-group">
+              <input type="number" class="form-control form-control-lg" id="numberInput" name="number" placeholder="Mobile Number">
+            </div>
+            <div class="col-lg-12 form-group">
+              <input type="text" class="form-control form-control-lg" id="addressInput" name="address" placeholder="Address">
+            </div>
+            <div class="col-lg-6 form-group">
+              <input type="password" class="form-control form-control-lg" id="passInput" name="pass" placeholder="Password" required>
+            </div>
+            <div class="col-lg-6 form-group">
+              <input type="password" class="form-control form-control-lg" id="repassInput" name="repass" placeholder="Repeat Password" required>
+            </div>
+
+            {% getDepartment as deptList %}
+            <div class="col-lg-12 form-group">
+              <label for="dept">Department</label>
+              <select class="form-control" id="dept" name="dept">
+                {% for d in deptList  %}
+                    <option value="{{d.id}}">{{d.name}}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="col-lg-4 form-group">
+              <label for="gender">Gender</label>
+              <select class="form-control" id="gender" name="gender">
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+              </select>
+            </div>
+            <div class="col-lg-4 form-group">
+              <label for="userPosition">User Position</label>
+              <select class="form-control" id="userPosition" name="userPosition">
+                <option value="NURSE">NURSE</option>
+                <option value="DOCTOR">DOCTOR</option>
+                <option value="RECEPTIONIST">RECEPTIONIST</option>
+              </select>
+            </div>
+            <div class="col-lg-4 form-group">
+              <label for="userShift">User Shift</label>
+              <select class="form-control" id="userShift" name="userShift">
+                <option value="9AM-5PM">9AM-5PM</option>
+                <option value="6PM-12AM">6PM-12AM</option>
+                <option value="12AM-6AM">12AM-6AM</option>
+              </select>
+            </div>
+          </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary">Save changes</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+{% endblock content %}

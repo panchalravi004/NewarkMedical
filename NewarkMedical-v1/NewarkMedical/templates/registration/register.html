@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  {% load static %}
+  {% load filterData %}
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>Newark Medical Associates</title>
+  <link rel="stylesheet" href="{% static '/vendors/ti-icons/css/themify-icons.css' %}">
+  <link rel="stylesheet" href="{% static '/vendors/base/vendor.bundle.base.css' %}">
+  <link rel="stylesheet" href="{% static '/css/style.css' %}">
+  <link rel="shortcut icon" href="{% static '/images/favicon.png' %}"/>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+</head>
+
+<body>
+  <div class="container-scroller">
+    <div class="container-fluid page-body-wrapper full-page-wrapper">
+      <div class="content-wrapper d-flex align-items-center auth px-0">
+        <div class="row w-100 mx-0">
+          <div class="col-lg-6 mx-auto">
+            <div class="auth-form-light text-left py-5 px-4 px-sm-5">
+              
+              {% if messages %}
+                <ul class="messages">
+                  {% for message in messages %}
+                    <div class="message-alert alert alert-{{message.tags}} alert-dismissible fade show py-0 px-2  d-flex justify-content-between align-items-center" role="alert">
+                      {{message}}
+                      <button type="button" class="btn close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    {% endfor %}
+                  </ul>
+                  <script> window.setTimeout(function () { $(".message-alert").alert('close'); }, 5000);</script>
+              {% endif %}
+
+              <div class="brand-logo">
+                <h3>Newark Medical Associates</h3>
+              </div>
+              <form method="POST" action=" {% url "create-account" %} " class="row pt-1">
+                {% csrf_token %}
+                <div class="col-lg-6 form-group">
+                  <input type="text" class="form-control form-control-lg" id="fnameInput" name="fname" placeholder="Firstname" required>
+                </div>
+                <div class="col-lg-6 form-group">
+                  <input type="text" class="form-control form-control-lg" id="lnameInput" name="lname" placeholder="Lastname" required>
+                </div>
+                <div class="col-lg-6 form-group">
+                  <input type="email" class="form-control form-control-lg" id="emailInput" name="email" placeholder="Email" required>
+                </div>
+                <div class="col-lg-6 form-group">
+                  <input type="text" class="form-control form-control-lg" id="numberInput" name="number" placeholder="Mobile Number" required>
+                </div>
+                <div class="col-lg-12 form-group">
+                  <input type="text" class="form-control form-control-lg" id="addressInput" name="address" placeholder="Address">
+                </div>
+                <div class="col-lg-6 form-group">
+                  <input type="password" class="form-control form-control-lg" id="passInput" name="pass" placeholder="Password" required>
+                </div>
+                <div class="col-lg-6 form-group">
+                  <input type="password" class="form-control form-control-lg" id="repassInput" name="repass" placeholder="Repeat Password" required>
+                </div>
+
+                {% getDepartment as deptList %}
+                <div class="col-lg-12 form-group">
+                  <label for="dept">Department</label>
+                  <select class="form-control" id="dept" name="dept">
+                    {% for d in deptList  %}
+                        <option value="{{d.id}}">{{d.name}}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+                <div class="col-lg-4 form-group">
+                  <label for="gender">Gender</label>
+                  <select class="form-control" id="gender" name="gender">
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                  </select>
+                </div>
+                <div class="col-lg-4 form-group">
+                  <label for="userPosition">User Position</label>
+                  <select class="form-control" id="userPosition" name="userPosition">
+                    <option value="NURSE">NURSE</option>
+                    <option value="DOCTOR">DOCTOR</option>
+                    <option value="RECEPTIONIST">RECEPTIONIST</option>
+                  </select>
+                </div>
+                <div class="col-lg-4 form-group">
+                  <label for="userShift">User Shift</label>
+                  <select class="form-control" id="userShift" name="userShift">
+                    <option value="9AM-5PM">9AM-5PM</option>
+                    <option value="6PM-12AM">6PM-12AM</option>
+                    <option value="12AM-6AM">12AM-6AM</option>
+                  </select>
+                </div>
+                <div class="d-flex justify-content-center mt-3">
+                  <button type="submit" class="btn btn-block btn-inverse-primary btn-lg font-weight-medium auth-form-btn" >SIGN UP</button>
+                </div>
+                <div class="text-center mt-4 font-weight-light">
+                  Already have an account? <a href="{% url 'login' %}" class="text-primary">Login</a>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="{% static '/vendors/base/vendor.bundle.base.js' %}"></script>
+  <script src="{% static '/js/off-canvas.js' %}"></script>
+  <script src="{% static '/js/hoverable-collapse.js' %}"></script>
+  <script src="{% static '/js/template.js' %}"></script>
+  <script src="{% static '/js/todolist.js' %}"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+</body>
+
+</html>

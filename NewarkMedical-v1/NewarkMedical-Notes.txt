@@ -1,0 +1,54 @@
+** Setup Go Through **
+
+pip install -r requirements.txt
+
+python manage.py makemigrations
+
+python manage.py migrate
+
+python manage.py runserver
+
+
+-------Admin User--------
+Username : admin
+Emial 	 : admin@gmail.com
+Password : admin
+
+For new Admin User
+	python manage.py createsuperuser
+------------------------------------
+
+Admin Route 	:- /admin
+Portal Route 	:- /
+
+------------------------------------
+Tables Content
+
+	User
+	Department
+	Room
+	Allergy
+	Diagnosis
+	Patient
+	Staff
+	Appointment
+	PatientHasAllergy
+	PatientHasDiagnosis
+	ConditionCheck
+	Surgery
+------------------------------------
+
+User Roles
+	['Admin', 'NURSE', 'DOCTOR', 'RECEPTIONIST','Patient']
+
+!! Notes :- 
+	Admin - DOCTOR - RECEPTIONIST :- They have full access of protal
+	
+	Patient :- 	When Patient record create, password will set same as email.
+				They can only view their own details
+				
+	Nurse :- 	Nurse have limited access of portal, 
+				Like manage patient and manage appointment
+				
+	- When Appointment completed it will set as view only
+				

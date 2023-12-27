@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% block title %}Appointment{% endblock title %}
+{% block content %}
+{% load static %}
+{% load filterData %}
+<div class="content-wrapper">
+  <div class="row">
+    <div class="col-md-12 grid-margin">
+      <div class="d-flex justify-content-between align-items-center">
+        <div>
+          <h4 class="font-weight-bold mb-0">View Surgery Records</h4>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-lg-12 grid-margin stretch-card">
+      <div class="card">
+        <div class="card-body">
+          <h4 class="card-title">Surgery Records</h4>
+          <div class="table-responsive">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Patient</th>
+                  <th>Nurse</th>
+                  <th>Surgery</th>
+                  <th>Room</th>
+                  <th>Date</th>
+                  <th>Status</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for s in surgeryList %}
+                  <tr>
+                    <td>
+                      <a href="{% url "patient-details" s.appointment.patient.id %}">
+                        {{s.appointment.patient.user.first_name}} {{s.appointment.patient.user.last_name}}
+                      </a>
+                    </td>
+                    <td>{{s.nurse.user.first_name}} {{s.nurse.user.last_name}}</td>
+                    <td>{{s.surgeon.user.first_name}} {{s.surgeon.user.last_name}}</td>
+                    <td>Room {{s.room.number}} - Floor {{s.room.floor}}</td>
+                    <td>{{s.surgery_date}}</td>
+                    <td>{{s.status}}</td>
+                    <td>
+                      {% if s.status != 'Completed' %}
+                        <a href="{% url "surgery-update-status" s.id s.status %}" type="button" class="btn btn-inverse-success">
+                          {% if s.status == 'Pending' %}
+                              Start
+                          {% else %}
+                              End
+                          {% endif %}  
+                        </a>
+                      {% else %}
+                        <i class="ti-check"></i>
+                      {% endif %}
+                    </td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+{% endblock content %}

@@ -1,0 +1,89 @@
+** Setup Go Through **
+
+pip install -r requirements.txt
+
+python manage.py makemigrations
+
+python manage.py migrate
+
+python manage.py runserver
+
+
+-------Admin User--------
+Username : admin
+Emial 	 : admin@gmail.com
+Password : admin
+
+For new Admin User
+	python manage.py createsuperuser
+------------------------------------
+
+Admin Route 	:- /admin
+Portal Route 	:- /
+
+------------------------------------
+Tables Content ::
+
+	User
+	Department
+	Room
+	Allergy
+	Diagnosis
+	Patient
+	Staff
+	Appointment
+	PatientHasAllergy
+	PatientHasDiagnosis
+	ConditionCheck
+	Surgery
+------------------------------------
+
+Task Done From Protal ::
+	- Dashboard
+	- Manage Patient
+	- Create Patient
+	- View Surgery Record
+	- View Appointment
+	- Create Appointment
+	- Add Diagnosis In Appointment
+	- Add Allergy In Appointment
+	- Add Checkup In Appointment
+	- Book Surgery In Appointment
+	- Take Appointment
+	- Mark Complete Appointment
+	- Start & Surgery from appointment details & View surgery
+
+Task Done From Admin Protal ::	
+	- Manage User
+	- Manage Staff
+	- Manage Patient
+	- Manage Appointment
+	- Manage Room
+	- Manage Diagnoses
+	- Manage Allergy
+	- Manage Surgery
+
+------------------------------------
+
+User Roles
+	['Admin', 'NURSE', 'DOCTOR', 'RECEPTIONIST','Patient']
+
+----------!!!!! Notes !!!!!---------
+
+	Admin		 |
+	DOCTOR		 |- They have full access of protal
+	RECEPTIONIST |
+	
+	Patient :- 	When Patient record create, password will set same as email.
+				They can only view their own details
+				
+	Nurse 	:- 	Nurse have limited access of portal, 
+				Like manage patient and manage appointment
+	
+	For New Staff :-  If you want to add new staff memeber then first create 
+					  user in user table, then create new staff member from
+					  staff table and link user with this staff record, or you
+					  can create new staff from registration page as well
+					  
+	Appointment   :-  When Appointment completed it will set as view only
+				

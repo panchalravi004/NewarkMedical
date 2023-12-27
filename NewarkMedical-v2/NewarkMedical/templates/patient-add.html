@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+{% block title %}Add Patient Details{% endblock title %}
+{% block content %}
+{% load static %}
+{% load filterData %}
+<div class="container content-wrapper my-3" style="border-radius:20px;">
+  <div class="row">
+    <div class="col-12 grid-margin">
+        <div class="card" style="border-radius:20px;">
+          <div class="card-body">
+            <h4 class="card-title">Add Patient Details</h4>
+            <form method="POST" action=" {% url "patient-add" %} " class="form-sample">
+              {% csrf_token %}
+              <p class="card-description">
+                Personal info
+              </p>
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group row">
+                    <label class="col-sm-3 col-form-label">First Name</label>
+                    <div class="col-sm-9">
+                      <input type="text" name="fname" class="form-control" required/>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group row">
+                    <label class="col-sm-3 col-form-label">Last Name</label>
+                    <div class="col-sm-9">
+                      <input type="text" name="lname" class="form-control" required/>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group row">
+                    <label class="col-sm-3 col-form-label">Email</label>
+                    <div class="col-sm-9">
+                      <input type="email" name="email" class="form-control" required/>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group row">
+                    <label class="col-sm-3 col-form-label">Mobile</label>
+                    <div class="col-sm-9">
+                      <input type="number" name="mobile" class="form-control" required/>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group row">
+                    <label class="col-sm-3 col-form-label">Date of Birth</label>
+                    <div class="col-sm-9">
+                      <input type="date" class="form-control" name="dob" placeholder="dd/mm/yyyy" required/>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group row">
+                    <label class="col-sm-3 col-form-label">Gender</label>
+                    <div class="col-sm-9">
+                      <select class="form-control form-control-lg" name="gender" required>
+                        <option>Male</option>
+                        <option>Female</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group row">
+                    <label class="col-sm-3 col-form-label">Address</label>
+                    <div class="col-sm-9">
+                      <input type="text" name="address" class="form-control" required/>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="d-flex justify-content-center">
+                <button type="submit" class="btn btn-info me-2">Save</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+  </div>
+</div>
+
+<script>
+  $('.dept-select').select2();
+</script>
+
+{% endblock content %}

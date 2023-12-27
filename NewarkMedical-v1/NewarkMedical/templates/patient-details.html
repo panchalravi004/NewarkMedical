@@ -1,0 +1,173 @@
+{% extends 'base.html' %}
+{% block title %}Patient Details{% endblock title %}
+{% block content %}
+{% load static %}
+{% load filterData %}
+
+{% getCurrentUserPosition user as position %}
+
+<div class="content-wrapper">
+  <div class="row">
+    <div class="col-md-12 grid-margin stretch-card">
+      <div class="card rounded">
+        <div class="card-body d-flex justify-content-between align-items-center p-2">
+          <div>
+            <h4 class="text-secondary mb-0">
+              <i class="ti-id-badge btn-icon-prepend"></i>
+              Patient Details
+            </h4>
+          </div>
+          <div>
+              {% if position != 'NURSE' and position != 'Patient' %}
+                <button type="button" class="btn btn-inverse-info btn-icon-text" data-bs-toggle="modal" data-bs-target="#addAppointment">
+                  <i class="ti-calendar btn-icon-prepend"></i>Add Appointment
+                </button>
+              {% endif %}
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-lg-4 grid-margin stretch-card">
+        <div class="card rounded">
+            <div class="card-body d-flex flex-column">
+              <h4 class="card-title">Patient Information</h4>
+              <p class="card-description m-0">Name : {{patientData.user.first_name}} {{patientData.user.last_name}}</p>
+              <ul class="list-arrow">
+                <li>{{patientData.user.email}}</li>
+                <li>{{patientData.number}}</li>
+                <li>{{patientData.dob}}</li>
+                <li>{{patientData.address}}</li>
+              </ul>
+              {% comment %} <button class="btn btn-inverse-primary w-100 mt-auto mx-auto">Update</button> {% endcomment %}
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4 grid-margin stretch-card">
+        <div class="card rounded">
+            <div class="card-body">
+              <h4 class="card-title">
+                Allergy
+              </h4>
+              <p class="card-description m-0">Previously notice by doctor</p>
+              <ul class="list-ticked">
+                {% for a in appAllergyList %}
+                  <li>{{a.allergy.name}}</li>
+                {% endfor %}
+              </ul>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4 grid-margin stretch-card">
+        <div class="card rounded">
+            <div class="card-body d-flex flex-column">
+                <h4 class="card-title">Appointment</h4>
+                <p class="card-description m-0"></p>
+                <ul class="list-star">
+                    <li>Date : {{nextAppointment.app_date}}</li>
+                    <li>Doctor : {{nextAppointment.doctor.user.first_name}} {{nextAppointment.doctor.user.last_name}}</li>
+                    <li>Nurse : {{nextAppointment.nurse.user.first_name}} {{nextAppointment.nurse.user.last_name}}</li>
+                    <li>Department : {{nextAppointment.department}}</li>
+                    <li>Status : {{nextAppointment.status}}</li>
+                </ul>
+                {% if nextAppointment %}
+                  <a href="{% url "appointment-details" nextAppointment.id %}" class="btn btn-inverse-primary w-100 mt-auto mx-auto ">Next Appointment</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-lg-12 grid-margin stretch-card">
+        <div class="card">
+          <div class="card-body">
+            <h4 class="card-title">Appointments</h4>
+            <div class="table-responsive">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Doctor</th>
+                    <th>Department</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for a in patientData.appointment_set.all|dictsort:"app_date"  %}
+                    <tr>
+                      <td>{{a.doctor.user.first_name}} {{a.doctor.user.last_name}}</td>
+                      <td>{{a.department.name}}</td>
+                      <td>{{a.app_date}}</td>
+                      <td>{{a.status}}</td>
+                      <td>
+                        <a href="{% url "appointment-details" a.id %}" class="d-flex align-items-center justify-content-center btn btn-inverse-dark btn-icon btn-rounded">
+                          <i class="ti-eye"></i>
+                        </a>
+                      </td>
+                      
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="addAppointment" tabindex="-1" aria-labelledby="addAppointmentLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <form method="POST" action="{% url "appointment-add" %}" class="modal-content">
+      {% csrf_token %}
+      <div class="modal-header">
+        <h5 class="modal-title" id="addAppointmentLabel">Schedule Appointment</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="forms-sample">
+          <input type="text" name="patient" value="{{patientData.id}}" hidden>
+          <div class="form-group">
+            <label for="doctor">Doctor</label>
+            <select class="form-control" id="doctor" name="doctor" required>
+              {% for d in doctorList  %}
+                  <option value="{{d.id}}">{{d.user.first_name}} {{d.user.last_name}}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="nurse">Nurse</label>
+            <select class="form-control" id="nurse" name="nurse" required>
+              {% for d in nurseList  %}
+                  <option value="{{d.id}}">{{d.user.first_name}} {{d.user.last_name}}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="dept">Department</label>
+            <select class="form-control" id="dept" name="dept" required>
+              {% for d in deptList  %}
+                  <option value="{{d.id}}">{{d.name}}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="appDate">Appointment Date</label>
+            <input type="datetime-local" class="form-control" id="appDate" name="appDate" required>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary">Save changes</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+{% endblock content %}

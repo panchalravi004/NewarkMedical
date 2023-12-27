@@ -1,0 +1,431 @@
+{% extends 'base.html' %}
+{% block title %}Appointment Details{% endblock title %}
+{% block content %}
+{% load static %}
+{% load filterData %}
+
+{% getCurrentUserPosition user as position %}
+
+<div class="content-wrapper">
+  <div class="row">
+    <div class="col-md-12 grid-margin stretch-card">
+      <div class="card rounded">
+        <div class="card-body d-flex justify-content-between align-items-center p-2">
+          <div>
+            <h4 class="text-secondary mb-0">
+              <i class="ti-clipboard btn-icon-prepend"></i>
+              Appointment Details
+            </h4>
+          </div>
+          <div>
+              {% if position != 'Patient' %}
+                {% if appointmentData.status == 'InProgress' %}
+                
+                  <button type="button" class="btn btn-inverse-info btn-icon-text" data-bs-toggle="modal" data-bs-target="#patientHasDiagnoses">
+                    <i class="ti-clipboard btn-icon-prepend"></i>Add Diagnoses
+                  </button>
+                  <button type="button" class="btn btn-inverse-success btn-icon-text" data-bs-toggle="modal" data-bs-target="#patientCheckup">
+                    <i class="ti-clipboard btn-icon-prepend"></i>Add Checkup
+                  </button>
+                  <button type="button" class="btn btn-inverse-success btn-icon-text" data-bs-toggle="modal" data-bs-target="#patientSurgery">
+                    <i class="ti-clipboard btn-icon-prepend"></i>Book Surgery
+                  </button>
+                {% endif %}
+                {% if appointmentData.status != 'Completed' %}
+                  <a href="{% url "appointment-update-status" appointmentData.id appointmentData.status %}" type="button" class="btn btn-inverse-success btn-icon-text">
+                    {% if appointmentData.status == 'Pending' %}
+                        Take
+                    {% else %}
+                    <i class="ti-check btn-icon-prepend"></i>Mark Completed
+                    {% endif %}  
+                  </a>
+                {% endif %}
+              {% endif %}
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-lg-4 grid-margin stretch-card">
+        <div class="card rounded">
+            <div class="card-body d-flex flex-column">
+              <h4 class="card-title">Patient Information</h4>
+              <p class="card-description m-0">Name : {{appointmentData.patient.user.first_name}} {{appointmentData.patient.user.last_name}}</p>
+              <ul class="list-arrow">
+                <li>{{appointmentData.patient.user.email}}</li>
+                <li>{{appointmentData.patient.number}}</li>
+                <li>{{appointmentData.patient.dob}}</li>
+                <li>{{appointmentData.patient.address}}</li>
+              </ul>
+              <a href="{% url "patient-details" appointmentData.patient.id %}" class="btn btn-inverse-primary w-100 mt-auto mx-auto">View</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4 grid-margin stretch-card">
+        <div class="card rounded">
+            <div class="card-body d-flex flex-column">
+              <h4 class="card-title">
+                Allergy
+              </h4>
+              <ul class="list-ticked">
+                {% for a in appAllergyList %}
+                  <li>{{a.allergy.name}}</li>
+                {% endfor %}
+              </ul>
+              {% if position != 'Patient' %}
+                {% if appointmentData.status == 'InProgress' %}
+                  <button class=" btn btn-inverse-primary  w-100 mt-auto mx-auto" data-bs-toggle="modal" data-bs-target="#patientHasAllergy">Add</button>
+                {% endif %}
+              {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4 grid-margin stretch-card">
+        <div class="card rounded">
+            <div class="card-body d-flex flex-column">
+                <h4 class="card-title">Appointment</h4>
+                <p class="card-description m-0"></p>
+                <ul class="list-star">
+                  <li>Date : {{appointmentData.app_date}}</li>
+                  <li>Doctor : {{appointmentData.doctor.user.first_name}} {{appointmentData.doctor.user.last_name}}</li>
+                  <li>Nurse : {{appointmentData.nurse.user.first_name}} {{appointmentData.nurse.user.last_name}}</li>
+                  <li>Department : {{appointmentData.department}}</li>
+                  <li>Status : {{appointmentData.status}}</li>
+              </ul>
+            </div>
+        </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-lg-12 grid-margin stretch-card">
+        <div class="card">
+          <div class="card-body">
+            <h4 class="card-title">Surgery</h4>
+            <div class="table-responsive">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Nurse</th>
+                    <th>Surgery</th>
+                    <th>Room</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for s in appSurgeryList %}
+                    <tr>
+                      <td>{{s.nurse.user.first_name}} {{s.nurse.user.last_name}}</td>
+                      <td>{{s.surgeon.user.first_name}} {{s.surgeon.user.last_name}}</td>
+                      <td>Room {{s.room.number}} - Floor {{s.room.floor}}</td>
+                      <td>{{s.surgery_date}}</td>
+                      <td>{{s.status}}</td>
+                      <td>
+                        {% if position != 'Patient' %}
+                          {% if s.status != 'Completed' %}
+                            <a href="{% url "surgery-update-status" s.id s.status %}" type="button" class="btn btn-inverse-success">
+                              {% if s.status == 'Pending' %}
+                                  Start
+                              {% else %}
+                                  End
+                              {% endif %}  
+                            </a>
+                          {% else %}
+                            <i class="ti-check"></i>
+                          {% endif %}
+                        {% endif %}
+                      </td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+    </div>
+    <div class="col-lg-12 grid-margin stretch-card">
+        <div class="card">
+          <div class="card-body">
+            <h4 class="card-title">Checkups</h4>
+            <div class="table-responsive">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Nurse</th>
+                    <th>Abnormal Breathing</th>
+                    <th>Heart Rate</th>
+                    <th>Blood Presure</th>
+                    <th>Temperature</th>
+                    <th>Checkup Date</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for c in appCheckupList %}
+                    <tr>
+                      <td>{{c.nurse.user.first_name}} {{c.nurse.user.last_name}}</td>
+                      <td>{{c.abnormal_breathing}}</td>
+                      <td>{{c.heart_rate}}</td>
+                      <td>{{c.blood_presure}}</td>
+                      <td>{{c.temperature}}</td>
+                      <td>{{c.created_date}}</td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+    </div>
+    <div class="col-lg-12 grid-margin stretch-card">
+        <div class="card">
+          <div class="card-body">
+            <h4 class="card-title">Diagnoses</h4>
+            <div class="table-responsive">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Diagnoses Title</th>
+                    <th>Treatment</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for d in appDiagnosesList %}
+                    <tr>
+                      <td>{{d.diagnosis.name}}</td>
+                      <td>{{d.treatment}}</td>
+                    </tr>
+                  {% endfor %}
+                  
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="patientHasDiagnoses" tabindex="-1" aria-labelledby="patientHasDiagnosesLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <form method="POST" action="{% url "appointment-add-diagnoses" %}" class="modal-content">
+      {% csrf_token %}
+      <div class="modal-header">
+        <h5 class="modal-title" id="patientHasDiagnosesLabel">Patient Has Diagnoses</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="forms-sample">
+          <input type="text" name="id" value="{{appointmentData.id}}" hidden>
+          <div class="form-group">
+            <label for="diagnoses">Diagnoses</label>
+            <select class="form-control" id="diagnoses" name="diagnoses" required>
+              {% for d in diagnosesList  %}
+              <option value="{{d.id}}">{{d.name}}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="treatment">Treatment</label>
+          <input type="text" class="form-control" id="treatment" name="treatment" placeholder="Diagnoses treatment" required>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary">Add</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="modal fade" id="patientHasAllergy" tabindex="-1" aria-labelledby="patientHasAllergyLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <form method="POST" action="{% url "appointment-add-allergy" %}" class="modal-content">
+      {% csrf_token %}
+      <div class="modal-header">
+        <h5 class="modal-title" id="patientHasAllergyLabel">Patient Has Allergy</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="forms-sample">
+          <input type="text" name="id" value="{{appointmentData.id}}" hidden>
+          <div class="form-group">
+            <label for="allergy">Allergy</label>
+            <select class="form-control" id="allergy" name="allergy" required>
+              {% for d in allergyList  %}
+              <option value="{{d.id}}">{{d.name}}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary">Add</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="modal fade" id="patientCheckup" tabindex="-1" aria-labelledby="patientCheckupLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <form method="POST" action="{% url "appointment-add-checkup" %}" class="modal-content">
+      {% csrf_token %}
+      <div class="modal-header">
+        <h5 class="modal-title" id="patientCheckupLabel">Patient Condition Checkup</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="forms-sample">
+          <div class="row">
+            <input type="text" name="id" value="{{appointmentData.id}}" hidden>
+            <div class="col-lg-6 form-group">
+              <label for="nurse">Nurse</label>
+              <select class="form-control form-control-sm" id="nurse" name="nurse" required>
+                {% for d in nurseList  %}
+                    <option value="{{d.id}}">{{d.user.first_name}} {{d.user.last_name}}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="col-lg-6 form-group">
+              <label for="height">Height</label>
+              <input type="text" class="form-control form-control-sm" id="height" name="heigth" placeholder="Height">
+            </div>
+            <div class="col-lg-6 form-group">
+              <label for="weight">Weight</label>
+              <input type="text" class="form-control form-control-sm" id="weight" name="weigth" placeholder="Weight">
+            </div>
+            <div class="col-lg-6 form-group">
+              <label for="urgency">Urgency</label>
+              <select class="form-control form-control-sm" id="urgency" name="urgency">
+                <option value="Yes">Yes</option>
+                <option value="Sometimes">Sometimes</option>
+                <option value="No" selected>No</option>
+              </select>
+            </div>
+            <div class="col-lg-6 form-group">
+              <label for="abnormal_breathing">Abnormal Breathing</label>
+              <select class="form-control form-control-sm" id="abnormal_breathing" name="abnormal_breathing" required>
+                <option value="Yes">Yes</option>
+                <option value="Sometimes">Sometimes</option>
+                <option value="No" selected>No</option>
+              </select>
+            </div>
+            <div class="col-lg-6 form-group">
+              <label for="smokes">Smokes</label>
+              <select class="form-control form-control-sm" id="smokes" name="smokes">
+                <option value="Yes">Yes</option>
+                <option value="Sometimes">Sometimes</option>
+                <option value="No" selected>No</option>
+              </select>
+            </div>
+            <div class="col-lg-6 form-group">
+              <label for="drinks">Drinks</label>
+              <select class="form-control form-control-sm" id="drinks" name="drinks">
+                <option value="Yes">Yes</option>
+                <option value="Sometimes">Sometimes</option>
+                <option value="No" selected>No</option>
+              </select>
+            </div>
+            <div class="col-lg-6 form-group">
+              <label for="has_headache">Has Headache</label>
+              <select class="form-control form-control-sm" id="has_headache" name="has_headache">
+                <option value="Yes">Yes</option>
+                <option value="Sometimes">Sometimes</option>
+                <option value="No" selected>No</option>
+              </select>
+            </div>
+            <div class="col-lg-6 form-group">
+              <label for="mental_state">Mental State</label>
+              <select class="form-control form-control-sm" id="mental_state" name="mental_state">
+                <option value="Stable" selected>Stable</option>
+                <option value="Mildly distressed">Mildly distressed</option>
+                <option value="Moderately distressed">Moderately distressed</option>
+                <option value="Severely distressed">Severely distressed</option>
+                <option value="Acutely psychotic">Acutely psychotic</option>
+              </select>
+            </div>
+            <div class="col-lg-6 form-group">
+              <label for="heart_rate">Heart Rate</label>
+              <input type="text" class="form-control form-control-sm" id="heart_rate" name="heart_rate" required>
+            </div>
+            <div class="col-lg-6 form-group">
+              <label for="blood_presure">Blood Presure</label>
+              <input type="text" class="form-control form-control-sm" id="blood_presure" name="blood_presure" required>
+            </div>
+            <div class="col-lg-6 form-group">
+              <label for="temperature">Temperature</label>
+              <input type="text" class="form-control form-control-sm" id="temperature" name="temperature" required>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary">Save Changes</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="modal fade" id="patientSurgery" tabindex="-1" aria-labelledby="patientSurgeryLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <form method="POST" action="{% url "appointment-add-surgery" %}" class="modal-content">
+      {% csrf_token %}
+      <div class="modal-header">
+        <h5 class="modal-title" id="patientSurgeryLabel">Schedule Surgery</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="forms-sample">
+            <input type="text" name="id" value="{{appointmentData.id}}" hidden>
+            <div class="form-group">
+              <label for="nurse">Nurse</label>
+              <select class="form-control form-control-sm" id="nurse" name="nurse" required>
+                {% for d in nurseList  %}
+                    <option value="{{d.id}}">{{d.user.first_name}} {{d.user.last_name}}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="surgeon">Surgeon</label>
+              <select class="form-control form-control-sm" id="surgeon" name="surgeon" required>
+                {% for s in surgeonList  %}
+                    <option value="{{s.id}}">{{s.user.first_name}} {{s.user.last_name}}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="room">Room</label>
+              <select class="form-control form-control-sm" id="room" name="room" required>
+                {% for r in roomList  %}
+                    <option value="{{r.id}}">Room {{r.number}} - Floor {{r.floor}}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="surgeryDate">Surgery Date</label>
+              <input type="datetime-local" class="form-control" id="surgeryDate" name="surgeryDate" required>
+            </div>
+            <div class="form-group">
+              <label for="status">Status</label>
+              <select class="form-control form-control-sm" id="status" name="status">
+                <option value="Pending">Pending</option>
+                <option value="InProgress">InProgress</option>
+                <option value="Completed">Completed</option>
+              </select>
+            </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary">Schedule</button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock content %}

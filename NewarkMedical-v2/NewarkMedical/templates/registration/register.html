@@ -1,0 +1,203 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+    
+<head>
+  
+  {% load static %}
+  {% load filterData %}
+
+	<title>Register NMA</title>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" integrity="sha384-gfdkjb5BdAXd+lj+gudLWI+BXq4IuLW5IT+brZEZsLFm++aCMlF1V92rMkPaX4PP" crossorigin="anonymous">
+
+	<style>
+		body {
+		background-image: url("{% static 'bg-masthead.jpg' %}");
+		background-repeat: no-repeat;
+		background-size: cover;
+		height: 100%;
+		margin: 0;
+		padding: 0;
+		}
+		html {
+		height: 100%;
+		margin: 0;
+		padding: 0;
+		background: #7abecc !important;
+		}
+		.user_card {
+			{% comment %} width: 350px; {% endcomment %}
+			margin-top: auto;
+			margin-bottom: auto;
+			/* background: #74cfbf; */
+			background: #7abecc75;
+			position: relative;
+			display: flex;
+			justify-content: center;
+			flex-direction: column;
+			padding: 10px;
+			box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+			-webkit-box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+			-moz-box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+			border-radius: 5px;
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+		}
+		.form_container {
+			margin-top: 20px;
+		}
+
+		#form-title{
+			color: #fff;
+			font-weight: bold;
+		}
+		.login_btn {
+			width: 100%;
+			background: #33ccff !important;
+			color: white !important;
+		}
+		.login_btn:focus {
+			box-shadow: none !important;
+			outline: 0px !important;
+		}
+		.login_container {
+			padding: 0 2rem;
+		}
+		.input-group-text {
+			background: #33ccff !important;
+			color: white !important;
+			border: 0 !important;
+			border-radius: 0.25rem 0 0 0.25rem !important;
+		}
+		.input_user,
+		.input_pass:focus {
+			box-shadow: none !important;
+			outline: 0px !important;
+		}
+    #messages{
+			background-color: rgb(128, 128, 128);
+			background-color: rgb(0, 0, 0);
+			color: #fff;
+			padding: 10px;
+			margin-top: 10px;
+    }  
+	</style>
+
+</head>
+<body>
+	<div class="container h-100">
+		<div class="d-flex justify-content-center h-100">
+			<div class="user_card">
+				<div class="d-flex justify-content-center">
+					<h3 id="form-title">REGISTER ACCOUNT</h3>
+				</div>
+				<div class="form_container">
+
+					<form method="POST" action="{% url "create-account" %}">
+
+						{% csrf_token %}
+
+						<div class="row">
+							<div class="col-lg-6 input-group mb-3">
+								<div class="input-group-append">
+								<span class="input-group-text"><i class="fas fa-user"></i></span>
+								</div>
+								<input type="text" name="fname" placeholder="First Name" class="form-control" required>
+							</div>
+							<div class="col-lg-6 input-group mb-3">
+								<div class="input-group-append">
+								<span class="input-group-text"><i class="fas fa-user"></i></span>
+								</div>
+								<input type="text" name="lname" placeholder="Last Name" class="form-control" required>
+							</div>
+							<div class="col-lg-6 input-group mb-3">
+								<div class="input-group-append">
+								<span class="input-group-text"><i class="fas fa-user"></i></span>
+								</div>
+								<input type="email" name="email" placeholder="Email..." class="form-control" required>
+							</div>
+							<div class="col-lg-6 input-group mb-3">
+								<div class="input-group-append">
+								<span class="input-group-text"><i class="fas fa-user"></i></span>
+								</div>
+								<input type="text" name="number" placeholder="Number..." class="form-control" required>
+							</div>
+							<div class="col-lg-12 input-group mb-3">
+								<div class="input-group-append">
+								<span class="input-group-text"><i class="fas fa-user"></i></span>
+								</div>
+								<input type="text" name="address" placeholder="Address..." class="form-control" required>
+							</div>
+							<div class="col-lg-6 input-group mb-3">
+								<div class="input-group-append">
+								<span class="input-group-text"><i class="fas fa-key"></i></span>
+								</div>
+								<input type="password" name="pass" placeholder="Password..." class="form-control" required>
+							</div>
+							<div class="col-lg-6 input-group mb-3">
+								<div class="input-group-append">
+								<span class="input-group-text"><i class="fas fa-key"></i></span>
+								</div>
+								<input type="password" name="repass" placeholder="Confirm Password..." class="form-control" required>
+							</div> 
+						</div>
+						<div class="row">
+							{% getDepartment as deptList %}
+							<div class="col-lg-6 form-group ">
+								<label for="dept">Department</label>
+								<select class="form-control" id="dept" name="dept" required>
+								{% for d in deptList  %}
+									<option value="{{d.id}}">{{d.name}}</option>
+								{% endfor %}
+								</select>
+							</div>
+							<div class="col-lg-6 form-group ">
+								<label for="gender">Gender</label>
+								<select class="form-control" id="gender" name="gender" required>
+								<option value="Male">Male</option>
+								<option value="Female">Female</option>
+								</select>
+							</div>
+							<div class="col-lg-6 form-group ">
+								<label for="userPosition">User Position</label>
+								<select class="form-control" id="userPosition" name="userPosition" required>
+								<option value="NURSE">NURSE</option>
+								<option value="DOCTOR">DOCTOR</option>
+								<option value="RECEPTIONIST">RECEPTIONIST</option>
+								</select>
+							</div>
+							<div class="col-lg-6 form-group ">
+								<label for="userShift">User Shift</label>
+								<select class="form-control" id="userShift" name="userShift" required>
+								<option value="9AM-5PM">9AM-5PM</option>
+								<option value="6PM-12AM">6PM-12AM</option>
+								<option value="12AM-6AM">12AM-6AM</option>
+								</select>
+							</div>
+						</div>
+						<div class="d-flex justify-content-center" style="width:100%;">
+							<div class="d-flex justify-content-center mt-3 login_container">
+							<input class="btn login_btn" type="submit" value="Register Account">
+							</div>
+						</div>
+					</form>
+				</div>
+        {% for message in messages %}
+            <p id="messages">{{ message }}</p>
+        {% endfor %}
+				<div class="mt-4">
+					<div class="d-flex justify-content-center links">
+						Already have an account? <a href="{% url 'login' %}" class="ml-2">Login</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>
+

@@ -1,0 +1,7 @@
+Django==5.0
+django-autoslug==1.9.9
+django-jazzmin==2.6.0
+numpy==1.26.2
+Pillow==10.1.0
+requests==2.31.0
+sqlparse==0.4.4

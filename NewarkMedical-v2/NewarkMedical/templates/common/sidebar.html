@@ -1,0 +1,71 @@
+{% load filterData %}
+
+{% getCurrentUserPosition user as position %}
+{% getPatient user as patient %}
+
+<nav class="sidebar sidebar-offcanvas" id="sidebar">
+    <ul class="nav">
+        {% if position != 'Patient' %}
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'home' %}">
+                    <i class="ti-shield menu-icon"></i>
+                    <span class="menu-title">Dashboard</span>
+                </a>
+            </li>
+            {% if position != 'NURSE' %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'manage-member' %}">
+                        <i class=" ti-user menu-icon"></i>
+                        <span class="menu-title">Manage Member</span>
+                    </a>
+                </li>
+            {% endif %}
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'manage-patient' %}">
+                    <i class="ti-id-badge menu-icon"></i>
+                    <span class="menu-title">Manage Patient</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'manage-appointment' %}">
+                    <i class="ti-calendar  menu-icon"></i>
+                    <span class="menu-title">Manage Appointment</span>
+                </a>
+            </li>
+            {% if position != 'NURSE' %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'manage-rooms' %}">
+                        <i class="ti-infinite  menu-icon"></i>
+                        <span class="menu-title">Manage Room/Bed</span>
+                    </a>
+                </li>
+            
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'manage-diagnoses' %}">
+                        <i class="ti-write  menu-icon"></i>
+                        <span class="menu-title">Manage Diagnoses</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'manage-allergy' %}">
+                        <i class="ti-list  menu-icon"></i>
+                        <span class="menu-title">Manage Allergy</span>
+                    </a>
+                </li>
+            {% endif %}
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'view-surgery-records' %}">
+                    <i class="ti-pulse  menu-icon"></i>
+                    <span class="menu-title">View Surgery Records</span>
+                </a>
+            </li>
+        {% else %}
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'patient-details' patient.id %}">
+                    <i class="ti-id-badge  menu-icon"></i>
+                    <span class="menu-title">View Details</span>
+                </a>
+            </li>
+        {% endif %}
+    </ul>
+</nav>
